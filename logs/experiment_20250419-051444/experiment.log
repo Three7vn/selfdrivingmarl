@@ -1,0 +1,62 @@
+2025-04-19 05:14:44,043 - marl_agent - INFO - Starting experiment with config: {'environment': {'env_id': 'intersection-v0', 'render_mode': 'human', 'dt': 0.2, 'max_episode_steps': 200, 'observation_type': 'Kinematics', 'vehicles_count': 5, 'collision_reward': -10.0, 'high_speed_reward': 0.1, 'normalize_reward': True, 'offroad_terminal': True, 'screen_width': 900, 'screen_height': 700, 'scaling': 5.5, 'show_trajectories': True}, 'agents': {'num_agents': 2, 'observation_space': {'features': True, 'vehicles_count': 8}, 'action_space': {'discrete': True, 'actions': ['IDLE', 'SLOWER', 'FASTER', 'LANE_LEFT', 'LANE_RIGHT']}}, 'training': {'algorithm': 'VPG', 'learning_rate': 0.0003, 'gamma': 0.99, 'epochs': 500, 'episodes_per_epoch': 5, 'batch_size': 64, 'epsilon_start': 0.8, 'epsilon_end': 0.05, 'epsilon_decay': 0.995}, 'network': {'hidden_layers': [256, 128], 'activation': 'relu'}, 'logging': {'log_interval': 10, 'checkpoint_interval': 50, 'tensorboard': True}}
+2025-04-19 05:14:46,860 - marl_agent - INFO - Starting epoch 1/500
+2025-04-19 05:14:46,918 - marl_agent - INFO - Starting episode 1/5
+2025-04-19 05:14:50,269 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:14:53,281 - marl_agent - INFO - Epoch 0, Episode 0: Rewards=[17.527272727272727, 15.774545454545454]
+2025-04-19 05:14:53,363 - marl_agent - INFO - Starting episode 2/5
+2025-04-19 05:14:56,677 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:14:59,756 - marl_agent - INFO - Starting episode 3/5
+2025-04-19 05:15:03,049 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:15:06,380 - marl_agent - INFO - Step 20, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:15:06,804 - marl_agent - INFO - Starting episode 4/5
+2025-04-19 05:15:09,823 - marl_agent - INFO - Starting episode 5/5
+2025-04-19 05:15:13,088 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:15:14,743 - marl_agent - INFO - Epoch 0, Episode 4: Rewards=[12.863636363636363, 11.577272727272726]
+2025-04-19 05:15:14,744 - marl_agent - INFO - Epoch 0: Mean Rewards=[14.927272727272728, 13.434545454545452], Mean Loss=0.0
+2025-04-19 05:15:14,746 - marl_agent - INFO - Starting epoch 2/500
+2025-04-19 05:15:14,835 - marl_agent - INFO - Starting episode 1/5
+2025-04-19 05:15:18,142 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:15:18,812 - marl_agent - INFO - Epoch 1, Episode 0: Rewards=[10.10909090909091, 9.098181818181818]
+2025-04-19 05:15:18,869 - marl_agent - INFO - Starting episode 2/5
+2025-04-19 05:15:22,130 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:15:25,156 - marl_agent - INFO - Starting episode 3/5
+2025-04-19 05:15:28,432 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:15:31,750 - marl_agent - INFO - Step 20, Rewards: [1.0, 0.9]
+2025-04-19 05:15:31,830 - marl_agent - INFO - Starting episode 4/5
+2025-04-19 05:15:35,161 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:15:38,252 - marl_agent - INFO - Starting episode 5/5
+2025-04-19 05:15:41,578 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:15:44,765 - marl_agent - INFO - Epoch 1, Episode 4: Rewards=[17.527272727272727, 15.774545454545454]
+2025-04-19 05:15:44,766 - marl_agent - INFO - Epoch 1: Mean Rewards=[16.227272727272727, 14.604545454545454], Mean Loss=0.0
+2025-04-19 05:15:44,767 - marl_agent - INFO - Starting epoch 3/500
+2025-04-19 05:15:44,809 - marl_agent - INFO - Starting episode 1/5
+2025-04-19 05:15:48,201 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:15:51,257 - marl_agent - INFO - Epoch 2, Episode 0: Rewards=[17.527272727272727, 15.774545454545454]
+2025-04-19 05:15:51,350 - marl_agent - INFO - Starting episode 2/5
+2025-04-19 05:15:54,752 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:15:57,913 - marl_agent - INFO - Starting episode 3/5
+2025-04-19 05:16:01,233 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:16:04,662 - marl_agent - INFO - Starting episode 4/5
+2025-04-19 05:16:07,922 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:16:09,982 - marl_agent - INFO - Starting episode 5/5
+2025-04-19 05:16:13,259 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:16:17,375 - marl_agent - INFO - Step 20, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:16:18,387 - marl_agent - INFO - Epoch 2, Episode 4: Rewards=[21.2, 19.080000000000002]
+2025-04-19 05:16:18,387 - marl_agent - INFO - Epoch 2: Mean Rewards=[17.527272727272727, 15.774545454545455], Mean Loss=0.0
+2025-04-19 05:16:18,391 - marl_agent - INFO - Starting epoch 4/500
+2025-04-19 05:16:18,459 - marl_agent - INFO - Starting episode 1/5
+2025-04-19 05:16:21,812 - marl_agent - INFO - Step 10, Rewards: [0.00909090909090906, 0.008181818181818153]
+2025-04-19 05:16:21,812 - marl_agent - INFO - Epoch 3, Episode 0: Rewards=[8.272727272727273, 7.445454545454544]
+2025-04-19 05:16:21,881 - marl_agent - INFO - Starting episode 2/5
+2025-04-19 05:16:25,251 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:16:25,632 - marl_agent - INFO - Starting episode 3/5
+2025-04-19 05:16:28,980 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:16:29,395 - marl_agent - INFO - Starting episode 4/5
+2025-04-19 05:16:32,753 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:16:33,157 - marl_agent - INFO - Starting episode 5/5
+2025-04-19 05:16:36,498 - marl_agent - INFO - Step 10, Rewards: [0.9181818181818181, 0.8263636363636363]
+2025-04-19 05:16:39,864 - marl_agent - INFO - Step 20, Rewards: [1.0, 0.9]
+2025-04-19 05:16:39,865 - marl_agent - INFO - Epoch 3, Episode 4: Rewards=[18.445454545454545, 16.600909090909088]
+2025-04-19 05:16:39,865 - marl_agent - INFO - Epoch 3: Mean Rewards=[10.858181818181817, 9.772363636363636], Mean Loss=0.0
+2025-04-19 05:16:39,866 - marl_agent - INFO - Starting epoch 5/500
+2025-04-19 05:16:39,921 - marl_agent - INFO - Starting episode 1/5

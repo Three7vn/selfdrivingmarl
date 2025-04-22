@@ -1,0 +1,10 @@
+torch>=1.9.0
+numpy>=1.19.5
+gymnasium>=0.26.3
+highway-env>=1.7.0
+stable-baselines3>=1.7.0
+tensorboard>=2.5.0
+matplotlib>=3.4.3
+pyyaml>=6.0
+pytest>=6.2.5  # For testing
+pygame>=2.0.1  # For rendering
