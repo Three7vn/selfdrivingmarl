@@ -248,111 +248,26 @@ class MultiAgentHighwayEnv:
                 backward_road = forward_road
                 print(f"Using default backward road: {backward_road[0]}->{backward_road[1]}")
             
-            # Try to create first agent on forward road
-            if forward_road:
+            # Force both agents onto forward road
+            backward_road = forward_road
+            
+            # Spawn both agents on forward road at 30m and 60m
+            for idx, longitudinal in enumerate([30, 60]):
                 lane_index = (forward_road[0], forward_road[1], 0)  # First lane
                 try:
                     lane = road.network.get_lane(lane_index)
                     vehicle = vehicle_class(
                         road=road,
-                        position=lane.position(30, 0),
-                        heading=lane.heading_at(30),
+                        position=lane.position(longitudinal, 0),
+                        heading=lane.heading_at(longitudinal),
                         speed=20
                     )
                     road.vehicles.append(vehicle)
                     self.controlled_vehicles.append(vehicle)
-                    print(f"Created Agent 1 on {forward_road[0]}->{forward_road[1]}, lane 0")
+                    print(f"Created Agent {idx+1} on {forward_road[0]}->{forward_road[1]}, lane 0 at pos {longitudinal}")
                 except Exception as e:
-                    print(f"Error creating first agent: {e}")
+                    print(f"Error creating Agent {idx+1}: {e}")
                     self._create_fallback_vehicle(road, forward_road, vehicle_class)
-            
-            # Try to create second agent on backward road
-            if backward_road and len(road_nets) > 1:
-                lane_index = (backward_road[0], backward_road[1], 0)  # First lane
-                try:
-                    lane = road.network.get_lane(lane_index)
-                    vehicle = vehicle_class(
-                        road=road,
-                        position=lane.position(30, 0),
-                        heading=lane.heading_at(30),
-                        speed=20
-                    )
-                    road.vehicles.append(vehicle)
-                    self.controlled_vehicles.append(vehicle)
-                    print(f"Created Agent 2 on {backward_road[0]}->{backward_road[1]}, lane 0")
-                except Exception as e:
-                    print(f"Error creating second agent: {e}")
-                    self._create_fallback_vehicle(road, backward_road, vehicle_class)
-            else:
-                # Create second agent on same road but different lane if possible
-                if forward_road and len(road.network.graph[forward_road[0]][forward_road[1]]) > 1:
-                    lane_index = (forward_road[0], forward_road[1], 1)  # Second lane
-                    try:
-                        lane = road.network.get_lane(lane_index)
-                        vehicle = vehicle_class(
-                            road=road,
-                            position=lane.position(60, 0),  # Different position
-                            heading=lane.heading_at(60),
-                            speed=20
-                        )
-                        road.vehicles.append(vehicle)
-                        self.controlled_vehicles.append(vehicle)
-                        print(f"Created Agent 2 on {forward_road[0]}->{forward_road[1]}, lane 1")
-                    except Exception as e:
-                        print(f"Error creating second agent on different lane: {e}")
-                        self._create_fallback_vehicle(road, forward_road, vehicle_class)
-                else:
-                    # Create on same lane but different position
-                    if len(self.controlled_vehicles) > 0:
-                        try:
-                            lane_index = self.controlled_vehicles[0].lane_index
-                            lane = road.network.get_lane(lane_index)
-                            vehicle = vehicle_class(
-                                road=road,
-                                position=lane.position(80, 0),  # Different position
-                                heading=lane.heading_at(80),
-                                speed=20
-                            )
-                            road.vehicles.append(vehicle)
-                            self.controlled_vehicles.append(vehicle)
-                            print(f"Created Agent 2 on same lane as Agent 1 but different position")
-                        except Exception as e:
-                            print(f"Error creating second agent on same lane: {e}")
-            
-            # Make sure we have at least two vehicles
-            while len(self.controlled_vehicles) < 2:
-                if self.controlled_vehicles:
-                    # Clone the first vehicle with different position
-                    vehicle = self.controlled_vehicles[0]
-                    try:
-                        new_vehicle = vehicle_class(
-                            road=road,
-                            position=vehicle.position + np.array([20, 0]),
-                            heading=vehicle.heading,
-                            speed=vehicle.speed
-                        )
-                        road.vehicles.append(new_vehicle)
-                        self.controlled_vehicles.append(new_vehicle)
-                        print(f"Created cloned agent")
-                    except Exception as e:
-                        print(f"Error cloning vehicle: {e}")
-                        break
-                else:
-                    # Create a default vehicle if none exist
-                    try:
-                        pos = np.array([50, 0])
-                        vehicle = vehicle_class(
-                            road=road,
-                            position=pos,
-                            heading=0,
-                            speed=20
-                        )
-                        road.vehicles.append(vehicle)
-                        self.controlled_vehicles.append(vehicle)
-                        print(f"Created default agent at position {pos}")
-                    except Exception as e:
-                        print(f"Error creating default vehicle: {e}")
-                        break
             
             # Update the environment's controlled vehicles
             if hasattr(self.env.unwrapped, 'controlled_vehicles'):
@@ -606,86 +521,41 @@ class MultiAgentHighwayEnv:
             truncated = True
             info = {}
         
-        # Create result lists
+        # Create result lists for agent 1
         observations = [next_obs]
         rewards = [reward]
         dones = [done]
         truncateds = [truncated]
         infos = [info]
-        
-        # Second agent processing
-        if len(self.controlled_vehicles) > 1 and len(smart_actions) > 1:
+
+        # Step through the environment for agent 2 to get true reward
+        if len(self.controlled_vehicles) > 1:
+            # Preserve the original ego, switch to agent 2
+            original_vehicle = self.env.unwrapped.vehicle
+            self.env.unwrapped.vehicle = self.controlled_vehicles[1]
+
             try:
-                # Store original vehicle
-                original_vehicle = self.env.unwrapped.vehicle
-                
-                # Switch to second vehicle
-                self.env.unwrapped.vehicle = self.controlled_vehicles[1]
-                
-                # Apply the action to the second vehicle directly
-                if hasattr(self.env.unwrapped.vehicle, 'act'):
-                    self.env.unwrapped.vehicle.act(smart_actions[1])
-                
-                # Get observation and reward for second agent
-                second_obs = None
-                second_reward = 0.0
-                
-                try:
-                    if hasattr(self.env.unwrapped, 'observation_type'):
-                        second_obs = self.env.unwrapped.observation_type.observe()
-                        
-                        # Dynamic second-agent reward: match environment reward settings
-                        env_conf = self.config['environment']
-                        collision_reward = env_conf.get('collision_reward', -5.0)
-                        high_speed_reward = env_conf.get('high_speed_reward', 0.1)
-                        lane_change_penalty = env_conf.get('lane_change_reward', -0.2)
-                        vehicle = self.env.unwrapped.vehicle
-                        # Collision penalty
-                        if hasattr(vehicle, 'crashed') and vehicle.crashed:
-                            second_reward = collision_reward
-                        else:
-                            # High-speed component
-                            speed = getattr(vehicle, 'speed', 0.0)
-                            max_speed = getattr(vehicle, 'max_speed', 1.0)
-                            speed_ratio = speed / max_speed if max_speed > 0 else 0.0
-                            second_reward = high_speed_reward * speed_ratio
-                            # Lane-change penalty if action was lane change
-                            if smart_actions[1] in [3, 4]:
-                                second_reward += lane_change_penalty
-                except Exception as e:
-                    print(f"Error calculating second agent reward: {e}")
-                    
-                # If observation is still None, use fallback
-                if second_obs is None:
-                    second_obs = next_obs.copy() + np.random.normal(0, 0.05, next_obs.shape)
-                
-                # Switch back to original vehicle
-                self.env.unwrapped.vehicle = original_vehicle
-                
-                # Add to result lists
-                observations.append(second_obs)
-                rewards.append(second_reward)
-                dones.append(done)
-                truncateds.append(truncated)
-                infos.append(info.copy())
-            except Exception as e:
-                print(f"Error processing second agent: {e}")
-                # Fallback to simpler approach
-                second_obs = next_obs.copy() + np.random.normal(0, 0.05, next_obs.shape)
-                second_reward = reward * 0.95
-                
-                observations.append(second_obs)
-                rewards.append(second_reward)
-                dones.append(done)
-                truncateds.append(truncated)
-                infos.append(info.copy())
+                next_obs2, reward2, done2, truncated2, info2 = self.env.step(smart_actions[1])
+            except Exception:
+                # Fallback if stepping fails
+                next_obs2 = next_obs.copy()
+                reward2 = 0.0
+                done2 = done
+                truncated2 = truncated
+                info2 = info.copy()
+
+            # Restore original ego vehicle
+            self.env.unwrapped.vehicle = original_vehicle
+
+            observations.append(next_obs2)
+            rewards.append(reward2)
+            dones.append(done2)
+            truncateds.append(truncated2)
+            infos.append(info2)
         else:
-            # Fallback for second agent if not available
-            second_obs = next_obs.copy() + np.random.normal(0, 0.05, next_obs.shape)
-            second_reward = reward * 0.95
-            
-            observations.append(second_obs)
-            rewards.append(second_reward)
+            # Duplicate if no second agent
+            observations.append(next_obs.copy())
+            rewards.append(reward)
             dones.append(done)
             truncateds.append(truncated)
             infos.append(info.copy())

@@ -194,7 +194,7 @@ class PGAgent:
             # Compute log probability for the selected action
             action_log_prob = torch.log(action_probs[0, action])
             
-            return action, action_log_prob.item()
+            return action, action_log_prob
             
         else:  # Continuous actions
             # For continuous control, output is mean of a Gaussian distribution
@@ -224,7 +224,7 @@ class PGAgent:
             # Convert to numpy array
             action = action_tensor.detach().numpy()
             
-            return action, action_log_prob.item()
+            return action, action_log_prob
     
     def remember(self, state, action, action_log_prob, reward, next_state, done):
         """Store experience in memory for training."""
@@ -245,12 +245,10 @@ class PGAgent:
         # Extract data from memory
         states = np.array([exp['state'] for exp in self.memory])
         actions = [exp['action'] for exp in self.memory]
-        action_log_probs = np.array([exp['action_log_prob'] for exp in self.memory])
+        # Stack log-prob tensors to preserve gradient information
+        action_log_probs = torch.stack([exp['action_log_prob'] for exp in self.memory])
         rewards = np.array([exp['reward'] for exp in self.memory])
         dones = np.array([exp['done'] for exp in self.memory])
-        
-        # Convert to tensor
-        action_log_probs = torch.FloatTensor(action_log_probs)
         
         # Calculate returns
         returns = self._compute_returns(rewards, dones)
